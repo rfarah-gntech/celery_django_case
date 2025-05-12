@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Virtual environments
+.env
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# Django
+/static/
+media/
+local_settings.py
+
+# VS Code
+.vscode/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Migrations (opcional)
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/__pycache__/
+
+# Ignore generated files from collectstatic
+/staticfiles/
+
+# Poetry
+poetry.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Docker
+*.pid
+*.seed
+*.tar
+*.bak
+*.swp
+docker-compose.override.yml
+
+# Docker volumes
+db_data/
+media_volume/
+static_volume/
+
+# System
+.DS_Store
+Thumbs.db
+

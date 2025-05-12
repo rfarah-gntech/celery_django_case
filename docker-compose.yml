@@ -1,0 +1,76 @@
+services:
+  db:
+    image: postgres:latest
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - webnet
+    ports:
+      - "5432:5432"
+
+  backend:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    command: "./init.sh"
+    networks:
+      - webnet
+    depends_on: # must be started after:
+      - db
+      - rabbitmq
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/static
+
+  celery:
+    restart: on-failure
+    build:
+      context: .
+    env_file:
+      - .env
+    command: [ "celery", "-A", "core", "worker", "--loglevel=info" ]
+    depends_on:
+      - backend
+      - rabbitmq
+    networks:
+      - webnet
+
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    ports:
+      # AMQP used by Celery
+      - "5672:5672"
+      # UI Web 
+      - "15672:15672"
+    networks:
+      - webnet
+
+  migrate:
+    restart: no
+    build:
+      context: .
+    command: python manage.py migrate
+    depends_on:
+      - db
+    networks:
+      - webnet
+
+volumes:
+  media_volume:
+  static_volume:
+  db_data:
+
+networks:
+  webnet:
+    driver: bridge
