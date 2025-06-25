@@ -9,6 +9,9 @@ while ! nc -z db 5432; do
 done
 echo "✅ Banco de dados disponível."
 
+echo "⚙️ Aplicando migrações..."
+python manage.py migrate --noinput
+
 echo "🗃️ Coletando arquivos estáticos..."
 python manage.py collectstatic --noinput
 
